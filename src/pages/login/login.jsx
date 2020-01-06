@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button, message } from 'antd';
+import {Redirect} from 'react-router-dom'
+
 import './login.less'
 import { reqLogin } from '../../api/index'
 import memoryUtils from '../../utils/memoryUtils'
+import storyUtils from '../../utils/storyUtils'
+
+
 class Login extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
@@ -13,6 +18,7 @@ class Login extends Component {
                 if(res.status == 0) {
                     message.success('登录成功')
                     const user = res.data;
+                    storyUtils.saveUser(user)
                     memoryUtils.user = user;
                     this.props.history.replace('/') //事件回调中跳转
                 } else {
@@ -41,7 +47,9 @@ class Login extends Component {
     }
 
     render() {
-
+        if(memoryUtils.user && memoryUtils.user._id){
+            return <Redirect to='/' />
+        }
         const { getFieldDecorator } = this.props.form
 
         return (
