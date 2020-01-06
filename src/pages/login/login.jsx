@@ -1,25 +1,36 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import './login.less'
+import { reqLogin } from '../../api/index'
 class Login extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
-              console.log('Received values of form: ', values);
+                let { username, password } = values
+                let res = await reqLogin(username, password)
+                console.log(res)
+                if(res.status == 0) {
+                    message.success('登录成功')
+                } else {
+                    message.error(res.msg)
+                }
+
+            } else {
+                console.log('校验失败')
             }
         });
     }
 
-    validatorPwd=(rule, value, callback)=>{
+    validatorPwd = (rule, value, callback) => {
         const form = this.props.form
-        if(!value){
+        if (!value) {
             callback('密码必须输入')
-        } else if(value.length<4){
+        } else if (value.length < 4) {
             callback('必须大于等于 4 位')
-        } else if(value.length>12){
+        } else if (value.length > 12) {
             callback('必须小于等于 12 位')
-        } else if(!/^[a-zA-Z0-9_]+$/.test(value)){
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
             callback('必须是英文、数字或下划线组成')
         } else {
             callback()
@@ -51,7 +62,7 @@ class Login extends Component {
                     </Form.Item>
                     <Form.Item>
                         {getFieldDecorator('password', {
-                            rules:[
+                            rules: [
                                 {
                                     validator: this.validatorPwd
                                 }
