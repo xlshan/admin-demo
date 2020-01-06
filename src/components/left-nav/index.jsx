@@ -5,12 +5,11 @@ import menuConfig from '../../config/menuConfig'
 import logo from '../../assets/images/logo.png'
 import './index.less'
 
-export default class LeftNav extends Component {
+class LeftNav extends Component {
     getData2 = (data) => {
         if (data) {
             return data.reduce((pre, item) => {
                 if (item.children) {
-                    console.log(pre.children)
                     pre.push((<Menu.SubMenu key={item.key} title={
                         <Link to={item.key}>
                             <span>
@@ -73,9 +72,10 @@ export default class LeftNav extends Component {
         }
     }
     render() {
+        let path = this.props.history.location.pathname
         return (
             <div className="left-nav">
-                <Menu mode="inline" theme="dark">
+                <Menu mode="inline" theme="dark" selectedKeys={[path]}>
                     {
                         this.getData2(menuConfig)
                     }
@@ -84,3 +84,5 @@ export default class LeftNav extends Component {
         )
     }
 }
+
+export default withRouter(LeftNav)
