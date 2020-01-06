@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Icon, Input, Button, message } from 'antd';
 import './login.less'
 import { reqLogin } from '../../api/index'
+import memoryUtils from '../../utils/memoryUtils'
 class Login extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
@@ -9,9 +10,11 @@ class Login extends Component {
             if (!err) {
                 let { username, password } = values
                 let res = await reqLogin(username, password)
-                console.log(res)
                 if(res.status == 0) {
                     message.success('登录成功')
+                    const user = res.data;
+                    memoryUtils.user = user;
+                    this.props.history.replace('/') //事件回调中跳转
                 } else {
                     message.error(res.msg)
                 }
