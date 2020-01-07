@@ -16,13 +16,13 @@ export default class Admin extends Component {
             return <Redirect to="/login" />   //render中跳转
         }
         return (
-            <Layout style={{ height: '100%' }}>
+            <Layout style={{ height: '100%'}}>
                 <Sider>
                     <LeftNav />
                 </Sider>
                 <Layout>
                     <Header>Header</Header>
-                    <Content style={{ backgroundColor: 'white' }}>
+                    <Content style={{ backgroundColor: 'white',margin: '20px' }}>
                         Content,{user.username}
                         {/* <Route
 
