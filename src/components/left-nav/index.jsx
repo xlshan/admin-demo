@@ -75,6 +75,10 @@ class LeftNav extends Component {
         let path = this.props.history.location.pathname
         return (
             <div className="left-nav">
+                <Link to='/' className="logo-link">
+                    <img src={logo} alt="logo" />
+                    <h1>硅谷后台</h1>
+                </Link>
                 <Menu mode="inline" theme="dark" selectedKeys={[path]}>
                     {
                         this.getData2(menuConfig)
