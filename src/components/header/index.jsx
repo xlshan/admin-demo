@@ -29,7 +29,7 @@ class Header extends Component {
     logout = () => {
         Modal.confirm({
             content: '您确认退出吗？',
-            onOk: () => {
+            onOk: () => { 
                 storyUtils.removeUser()
                 memoryUtils.user = {}
                 this.props.history.replace('/login')
