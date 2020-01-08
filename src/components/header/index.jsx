@@ -6,6 +6,7 @@ import { formateDate } from '../../utils/dateUtils'
 import LikeButton from '../like-button/index'
 import { Modal } from 'antd'
 import { withRouter } from 'react-router-dom'
+import menuConfig from '../../config/menuConfig'
 
 
 class Header extends Component {
@@ -14,6 +15,29 @@ class Header extends Component {
     }
     componentDidMount() {
         this.getTime()
+        this.getTitle()
+    }
+
+
+    getTitle = (current_path) => {
+        if (menuConfig.length) {
+            let title
+            menuConfig.forEach(item => {
+                if (item.children) {
+                    item.children.forEach(item2 => {
+                        if (current_path == item2.key) {
+                            title = item2.title
+                        }
+                    })
+                } else {
+                    if (current_path == item.key) {
+                        title = item.title
+                    }
+                }
+            })
+            console.log(title)
+            return title
+        }
     }
 
     getTime = () => {
@@ -29,7 +53,7 @@ class Header extends Component {
     logout = () => {
         Modal.confirm({
             content: '您确认退出吗？',
-            onOk: () => { 
+            onOk: () => {
                 storyUtils.removeUser()
                 memoryUtils.user = {}
                 this.props.history.replace('/login')
@@ -42,6 +66,10 @@ class Header extends Component {
     render() {
         let { username } = memoryUtils.user
         let { time } = this.state
+
+        let current_path = this.props.location.pathname
+        let current_title = this.getTitle(current_path)
+
         return (
             <div className="header">
                 <div className="header-top">
@@ -49,7 +77,7 @@ class Header extends Component {
                     <LikeButton onClick={this.logout}>退出</LikeButton>
                 </div>
                 <div className="header-bottom">
-                    <div className="header-bottom-left">首页</div>
+                    <div className="header-bottom-left">{current_title}</div>
                     <div className="header-bottom-right">
                         <span>{time}</span>
                     </div>
