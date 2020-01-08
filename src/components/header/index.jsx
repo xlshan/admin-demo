@@ -35,7 +35,6 @@ class Header extends Component {
                     }
                 }
             })
-            console.log(title)
             return title
         }
     }
