@@ -5,7 +5,11 @@ import memoryUtils from '../../utils/memoryUtils'
 import Header from '../../components/header'
 import LeftNav from '../../components/left-nav'
 import Home from '../../pages/home/home'
+import Category from '../../pages/category/category'
+import './admin.less'
+
 const { Footer, Sider, Content } = Layout
+
 
 export default class Admin extends Component {
     render() {
@@ -16,15 +20,14 @@ export default class Admin extends Component {
             return <Redirect to="/login" />   //render中跳转
         }
         return (
-            <Layout style={{ height: '100%'}}>
+            <Layout style={{ height: '100%' }}>
                 <Sider>
                     <LeftNav />
                 </Sider>
                 <Layout>
                     <Header>Header</Header>
-                    <Content style={{ backgroundColor: 'white',margin: '20px' }}>
-                        Content,{user.username}
-                        {/* <Route
+                    <Content style={{ backgroundColor: 'white', margin: '20px' }}>
+                        <Route
 
                             path='/home'
 
@@ -36,7 +39,7 @@ export default class Admin extends Component {
 
                             component={Category} />
 
-                        <Route
+                        {/* <Route
 
                             path='/product'
 
@@ -76,7 +79,7 @@ export default class Admin extends Component {
 
                             to='/home'
 
-                        /> */}
+                        />*/}
                     </Content>
                     <Footer
                         style={{ textAlign: 'center', color: '#aaaaaa' }}>推荐使用谷歌浏览器，可以获得更佳页面操作体验</Footer>
