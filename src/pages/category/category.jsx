@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Table, Button, Modal, Form, message } from 'antd'
-import {Link,Redirect} from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import './category.less'
 import AddCategory from '../../components/category/addCategory'
 import UpdateCategory from '../../components/category/updateCategory'
@@ -28,7 +28,6 @@ class Category extends Component {
     }
 
     getCategorys = async (parentId) => {
-        console.log(this.category)
         this.setState({
             loading: true
         })
@@ -188,13 +187,20 @@ class Category extends Component {
             isShow: 2
         })
     }
+    showCategorys = () => {
+        this.setState({
+            parentId: '0',
+            title: '',
+            list2: []
+        })
+    }
 
     render() {
         const { parentId, list1, list2, loading, title } = this.state
         const category = this.category || {}
         const titles = parentId == '0' ? '一级分类列表' : (
             <>
-                <Redirect to='/category'><span>一级分类列表</span></Redirect>  ->  
+                <LikeButton onClick={this.showCategorys}>一级分类列表</LikeButton>  ->  
                 {title}
             </>
         )
@@ -210,7 +216,7 @@ class Category extends Component {
                         onCancel={this.handleCancelAdd}
                         okText="确认"
                         cancelText="取消">
-                        <AddCategory setForm={form => this.form = form} parentId={parentId}></AddCategory>
+                        <AddCategory setForm={form => this.form = form} parentId={parentId} categorys={list1}></AddCategory>
                     </Modal>
 
 
