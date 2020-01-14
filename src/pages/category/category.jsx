@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Table, Button, Modal, Form, message } from 'antd'
+import {Link,Redirect} from 'react-router-dom'
 import './category.less'
 import AddCategory from '../../components/category/addCategory'
 import UpdateCategory from '../../components/category/updateCategory'
@@ -10,7 +11,10 @@ class Category extends Component {
     state = {
         isShow: 0,
         list1: [],
-        parentId: '0'
+        list2: [],
+        parentId: '0',
+        loading: false,
+        title: ''
     }
 
 
@@ -19,20 +23,44 @@ class Category extends Component {
     // }
 
     componentDidMount() {
-        this.getCategorys()
+        let { parentId } = this.state
+        this.getCategorys(parentId)
     }
 
-    getCategorys = async () => {
-        let { parentId } = this.state
+    getCategorys = async (parentId) => {
+        console.log(this.category)
+        this.setState({
+            loading: true
+        })
         let res = await reqCategorys(parentId)
+        this.setState({
+            loading: false
+        })
         if (res.status == 0) {
-            this.setState({
-                list1: res.data
-            })
+            if (parentId === '0') {
+                this.setState({
+                    list1: res.data
+                })
+            } else {
+                this.setState({
+                    list2: res.data
+                })
+            }
+
         } else {
             message.error(res.msg)
         }
     }
+
+    getList2 = (category) => {
+        this.setState({
+            parentId: category._id,
+            title: category.name
+        }, () => {
+            this.getCategorys(category._id)
+        })
+    }
+
 
     getColumns = () => {
         const columns = [
@@ -48,8 +76,8 @@ class Category extends Component {
                 width: 280,
                 render: (category) => {
                     return (<div>
-                        <LikeButton  onClick={() => this.updateFn(category)}>修改分类</LikeButton>
-                        <LikeButton  >查看子分类</LikeButton>
+                        <LikeButton onClick={() => this.updateFn(category)}>修改分类</LikeButton>
+                        <LikeButton onClick={() => this.getList2(category)}>查看子分类</LikeButton>
                     </div>)
                 }
             }
@@ -110,12 +138,18 @@ class Category extends Component {
     }
 
     addCategory = async () => {
+        this.setState({
+            loading: true
+        })
         let { parentId, categoryName } = this.form.getFieldsValue()
         let res = await reqAddCategory(categoryName, parentId)
+        this.setState({
+            loading: false
+        })
         if (res.status == 0) {
             message.success('添加成功')
             this.form.resetFields()
-            this.getCategorys()
+            this.getCategorys(this.state.parentId)
         } else {
             message.error(res.msg)
         }
@@ -124,11 +158,11 @@ class Category extends Component {
     updateCategory = async () => {
         let { categoryName } = this.form.getFieldsValue()
         let { _id } = this.category
-        let res = await reqUpdateCategory(_id , categoryName)
+        let res = await reqUpdateCategory(_id, categoryName)
         if (res.status == 0) {
             message.success('修改成功')
             this.form.resetFields()
-            this.getCategorys()
+            this.getCategorys(this.state.parentId)
         } else {
             message.error(res.msg)
         }
@@ -156,13 +190,18 @@ class Category extends Component {
     }
 
     render() {
-        const { parentId, list1 } = this.state
+        const { parentId, list1, list2, loading, title } = this.state
         const category = this.category || {}
-
+        const titles = parentId == '0' ? '一级分类列表' : (
+            <>
+                <Redirect to='/category'><span>一级分类列表</span></Redirect>  ->  
+                {title}
+            </>
+        )
         return (
             <div className="category">
-                <Card title="一级分类列表" extra={this.extra()}>
-                    <Table dataSource={list1} columns={this.getColumns()} rowKey={item => item._id} bordered={true} />
+                <Card title={titles} extra={this.extra()}>
+                    <Table dataSource={parentId == '0' ? list1 : list2} loading={loading} columns={this.getColumns()} rowKey={'_id'} bordered={true} />
 
                     <Modal
                         title="添加分类"
