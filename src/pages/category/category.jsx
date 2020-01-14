@@ -4,8 +4,11 @@ import { Link, Redirect } from 'react-router-dom'
 import './category.less'
 import AddCategory from '../../components/category/addCategory'
 import UpdateCategory from '../../components/category/updateCategory'
-import { reqAddCategory, reqCategorys, reqUpdateCategory } from '../../api/index'
+import { reqAddCategory, reqCategorys, reqUpdateCategory, reqDeleteCategory } from '../../api/index'
 import LikeButton from '../../components/like-button/index'
+
+
+const { confirm } = Modal
 
 class Category extends Component {
     state = {
@@ -75,7 +78,8 @@ class Category extends Component {
                 width: 280,
                 render: (category) => {
                     return (<div>
-                        <LikeButton onClick={() => this.updateFn(category)}>修改分类</LikeButton>
+                        <LikeButton onClick={() => this.updateFn(category)}>修改</LikeButton>
+                        <LikeButton onClick={() => this.deleteFn(category._id)}>删除</LikeButton>
                         <LikeButton onClick={() => this.getList2(category)}>查看子分类</LikeButton>
                     </div>)
                 }
@@ -167,6 +171,16 @@ class Category extends Component {
         }
     }
 
+    deleteCategory = async (id) => {
+        let res = await reqDeleteCategory(id)
+        if (res.status == 0) {
+            message.success('删除成功')
+            this.getCategorys(this.state.parentId)
+        } else {
+            message.error(res.msg)
+        }
+    }
+
 
 
     extra = () => {
@@ -187,6 +201,20 @@ class Category extends Component {
             isShow: 2
         })
     }
+
+    deleteFn = (id) => {
+        confirm({
+            title: '你确定删除分类吗?',
+            okText: "确认",
+            cancelText: "取消",
+            onOk: () => {
+                this.deleteCategory(id)
+            },
+            onCancel() { },
+        });
+    }
+
+
     showCategorys = () => {
         this.setState({
             parentId: '0',
@@ -200,7 +228,7 @@ class Category extends Component {
         const category = this.category || {}
         const titles = parentId == '0' ? '一级分类列表' : (
             <>
-                <LikeButton onClick={this.showCategorys}>一级分类列表</LikeButton>  ->  
+                <LikeButton onClick={this.showCategorys}>一级分类列表</LikeButton>  ->
                 {title}
             </>
         )
