@@ -45,7 +45,7 @@ export const reqAddCategory = (categoryName,parentId ) => ajax("/manage/category
  * @param {*} parentId
  * @param {*} categoryName
  */
-export const reqUpdateCategory = (parentId, categoryName) => ajax("/manage/category/update", {parentId, categoryName}, "POST");
+export const reqUpdateCategory = (categoryId, categoryName) => ajax("/manage/category/update", {categoryId, categoryName}, "POST");
 
 
 

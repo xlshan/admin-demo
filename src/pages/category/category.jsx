@@ -2,14 +2,21 @@ import React, { Component } from 'react'
 import { Card, Table, Button, Modal, Form, message } from 'antd'
 import './category.less'
 import AddCategory from '../../components/category/addCategory'
-import { reqAddCategory, reqCategorys } from '../../api/index'
+import UpdateCategory from '../../components/category/updateCategory'
+import { reqAddCategory, reqCategorys, reqUpdateCategory } from '../../api/index'
+import LikeButton from '../../components/like-button/index'
 
 class Category extends Component {
     state = {
-        isShowAdd: 0,
+        isShow: 0,
         list1: [],
         parentId: '0'
     }
+
+
+    // componentWillMount(){
+    //     this.getColumns()
+    // }
 
     componentDidMount() {
         this.getCategorys()
@@ -36,13 +43,13 @@ class Category extends Component {
             },
             {
                 title: '操作',
-                dataIndex: 'caozuo',
-                key: 'caozuo',
+                // dataIndex: 'caozuo',
+                // key: 'caozuo',
                 width: 280,
-                render() {
+                render: (category) => {
                     return (<div>
-                        <Button type="link">修改分类</Button>
-                        <Button type="link">查看子分类</Button>
+                        <LikeButton  onClick={() => this.updateFn(category)}>修改分类</LikeButton>
+                        <LikeButton  >查看子分类</LikeButton>
                     </div>)
                 }
             }
@@ -51,10 +58,54 @@ class Category extends Component {
     }
 
 
-    handleOk = () => {
+
+    getColumn = () => {
+        this.columns = [
+            {
+                title: '分类名称',
+                dataIndex: 'name',
+                key: 'name',
+            },
+            {
+                title: '操作',
+                width: 300,
+                render: (category) => (
+                    <>
+                        <LikeButton onClick={() => this.updates(category)}>修改分类</LikeButton>
+                        {
+                            this.state.parentId == '0' ? <LikeButton onClick={() => this.getSubCategoryList(category)}>查看子分类</LikeButton> : null
+                        }
+                    </>
+                ),
+            }
+        ];
+    }
+
+
+    handleOkAdd = () => {
         this.addCategory()
         this.setState({
-            isShowAdd: 0,
+            isShow: 0,
+        });
+    }
+
+    handleCancelAdd = () => {
+        this.setState({
+            isShow: 0,
+        });
+    }
+
+
+    handleOkUpdate = () => {
+        this.updateCategory()
+        this.setState({
+            isShow: 0,
+        });
+    }
+
+    handleCancelUpdate = () => {
+        this.setState({
+            isShow: 0,
         });
     }
 
@@ -70,11 +121,20 @@ class Category extends Component {
         }
     }
 
-    handleCancel = () => {
-        this.setState({
-            isShowAdd: 0,
-        });
+    updateCategory = async () => {
+        let { categoryName } = this.form.getFieldsValue()
+        let { _id } = this.category
+        let res = await reqUpdateCategory(_id , categoryName)
+        if (res.status == 0) {
+            message.success('修改成功')
+            this.form.resetFields()
+            this.getCategorys()
+        } else {
+            message.error(res.msg)
+        }
     }
+
+
 
     extra = () => {
         return (
@@ -84,12 +144,20 @@ class Category extends Component {
 
     addFn = () => {
         this.setState({
-            isShowAdd: 1
+            isShow: 1
+        })
+    }
+
+    updateFn = (category) => {
+        this.category = category
+        this.setState({
+            isShow: 2
         })
     }
 
     render() {
         const { parentId, list1 } = this.state
+        const category = this.category || {}
 
         return (
             <div className="category">
@@ -98,12 +166,23 @@ class Category extends Component {
 
                     <Modal
                         title="添加分类"
-                        visible={this.state.isShowAdd == 1}
-                        onOk={this.handleOk}
-                        onCancel={this.handleCancel}
+                        visible={this.state.isShow == 1}
+                        onOk={this.handleOkAdd}
+                        onCancel={this.handleCancelAdd}
                         okText="确认"
                         cancelText="取消">
                         <AddCategory setForm={form => this.form = form} parentId={parentId}></AddCategory>
+                    </Modal>
+
+
+                    <Modal
+                        title="更新分类"
+                        visible={this.state.isShow == 2}
+                        onOk={this.handleOkUpdate}
+                        onCancel={this.handleCancelUpdate}
+                        okText="确认"
+                        cancelText="取消">
+                        <UpdateCategory setForm={form => this.form = form} categoryName={category.name}></UpdateCategory>
                     </Modal>
 
                 </Card>
