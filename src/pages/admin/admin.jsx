@@ -6,7 +6,7 @@ import Header from '../../components/header'
 import LeftNav from '../../components/left-nav'
 import Home from '../../pages/home/home'
 import Category from '../../pages/category/category'
-import Product from '../../pages/product/product'
+import Product from '../product/product'
 import './admin.less'
 
 const { Footer, Sider, Content } = Layout
@@ -40,13 +40,13 @@ export default class Admin extends Component {
 
                             component={Category} />
 
-                         <Route
+                        <Route
 
                             path='/product'
 
                             component={Product} />
 
-                       {/* <Route
+                        {/* <Route
 
                             path='/role'
 

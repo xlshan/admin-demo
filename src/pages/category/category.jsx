@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Table, Button, Modal, Form, message } from 'antd'
-import { Link, Redirect } from 'react-router-dom'
+import { Card, Table, Button, Modal, Form, message, Icon } from 'antd'
 import './category.less'
 import AddCategory from '../../components/category/addCategory'
 import UpdateCategory from '../../components/category/updateCategory'
@@ -228,7 +227,7 @@ class Category extends Component {
         const category = this.category || {}
         const titles = parentId == '0' ? '一级分类列表' : (
             <>
-                <LikeButton onClick={this.showCategorys}>一级分类列表</LikeButton>  ->
+                <LikeButton onClick={this.showCategorys}>一级分类列表</LikeButton>  <Icon type="arrow-right" style={{marginRight: 5}} />
                 {title}
             </>
         )
