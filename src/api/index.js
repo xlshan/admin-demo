@@ -73,13 +73,15 @@ export const reqSearchProducts = ({
   searchType,
   searchName
 }) =>
-  ajax("/manage/product/search", {
-    pageNum,
-
-    pageSize,
-
-    [searchType]: searchName
-  });
+  ajax(
+    "/manage/product/search",
+    {
+      pageNum,
+      pageSize,
+      [searchType]: searchName
+    },
+    "GET"
+  );
 
 // 添加/更新商品
 export const reqAddOrUpdateProduct = product =>
