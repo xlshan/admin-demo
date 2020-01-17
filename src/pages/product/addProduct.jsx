@@ -2,17 +2,26 @@ import React, { Component } from 'react'
 
 import { Card, Icon, Form, Input, Cascader } from 'antd'
 import LikeButton from '../../components/like-button'
-
+import Uploads from '../../components/product/upload'
+import Editor from '../../components/product/editor'
 
 
 const { TextArea } = Input;
 class AddProduct extends Component {
+    state = {
+        imageUrl: '',
+        loading: false
+    }
+
     backs = () => {
         this.props.history.goBack()
     }
+
     onChange = () => {
 
     }
+
+
     render() {
         const title = (
             <>
@@ -55,7 +64,7 @@ class AddProduct extends Component {
                 ],
             },
         ]
-
+       
         return (
             <Card title={title} >
                 <Form labelCol={{ span: 2 }} wrapperCol={{ span: 8 }}>
@@ -93,7 +102,25 @@ class AddProduct extends Component {
                     </Form.Item>
 
                     <Form.Item label="商品分类">
-                        <Cascader options={options} onChange={this.onChange} placeholder="请选择分类" />
+                        {
+                            getFieldDecorator('category', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请选择分类!',
+                                    },
+                                ],
+                            })(<Cascader options={options} onChange={this.onChange} placeholder="请选择分类" />)
+                        }
+
+                    </Form.Item>
+
+                    <Form.Item label="商品图片">
+                        <Uploads></Uploads>  
+                    </Form.Item>
+
+                    <Form.Item label="商品详情"wrapperCol={{ span: 20 }}>
+                        <Editor></Editor>  
                     </Form.Item>
                 </Form>
             </Card>
